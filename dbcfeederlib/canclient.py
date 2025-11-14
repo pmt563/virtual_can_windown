@@ -245,10 +245,10 @@ def receive_can_data(dev_ch2):
         if ret > 0:
             rcv_can_msgs = (ZCAN_Receive_Data * ret)()
             num = canDLL.ZCAN_Receive(dev_ch2, byref(rcv_can_msgs), ret, -1)
-            # for i in range(num):
-            #     print(f"[{i}]:ts:{rcv_can_msgs[i].timestamp}, id:{rcv_can_msgs[i].frame.can_id}, len:{rcv_can_msgs[i].frame.can_dlc}, "
-            #         f"eff:{rcv_can_msgs[i].frame.eff}, rtr:{rcv_can_msgs[i].frame.rtr}, "
-            #         f"data:{' '.join(str(rcv_can_msgs[i].frame.data[j]) for j in range(rcv_can_msgs[i].frame.can_dlc))}")
+            for i in range(num):
+                print(f"[{i}]:ts:{rcv_can_msgs[i].timestamp}, id:{rcv_can_msgs[i].frame.can_id}, len:{rcv_can_msgs[i].frame.can_dlc}, "
+                    f"eff:{rcv_can_msgs[i].frame.eff}, rtr:{rcv_can_msgs[i].frame.rtr}, "
+                    f"data:{' '.join(str(rcv_can_msgs[i].frame.data[j]) for j in range(rcv_can_msgs[i].frame.can_dlc))}")
         return rcv_can_msgs
 
 def close_device(dev_ch1, dev_ch2, device_handle):
