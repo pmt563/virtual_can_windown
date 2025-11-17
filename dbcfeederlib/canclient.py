@@ -173,11 +173,20 @@ def start_channel(dev_ch):
         print(f"Start CAN channel failed!")
     print("Start CAN channel OK!")
 
+# # Current code of HnR system
+# def configure_filter(dev_ch2):
+#     canDLL.ZCAN_ClearFilter(dev_ch2)
+#     canDLL.ZCAN_SetFilterMode(dev_ch2, 1)
+#     #canDLL.ZCAN_SetFilterStartID(dev_ch2, 5)
+#     #canDLL.ZCAN_SetFilterEndID(dev_ch2, 6)
+#     canDLL.ZCAN_AckFilter(dev_ch2)
+
+# New code of filter config only for CAN ID 0x31C
 def configure_filter(dev_ch2):
     canDLL.ZCAN_ClearFilter(dev_ch2)
-    canDLL.ZCAN_SetFilterMode(dev_ch2, 1)
-    #canDLL.ZCAN_SetFilterStartID(dev_ch2, 5)
-    #canDLL.ZCAN_SetFilterEndID(dev_ch2, 6)
+    canDLL.ZCAN_SetFilterMode(dev_ch2, 0)  # 0 = Range mode, 1 = List mode
+    canDLL.ZCAN_SetFilterStartID(dev_ch2, 0x31C)  
+    canDLL.ZCAN_SetFilterEndID(dev_ch2, 0x31C)    
     canDLL.ZCAN_AckFilter(dev_ch2)
 
 def send_canfd_data(dev_ch1):
