@@ -15,7 +15,7 @@
 
 import logging
 import time
-import platform
+
 from abc import ABC, abstractmethod
 
 import cantools.database  # type: ignore
@@ -46,20 +46,12 @@ class CanReader(ABC):
 
         can_filters = mapper.can_frame_id_whitelist()
         log.info("Using CAN frame ID whitelist=%s", can_filters)
-        system = platform.system().lower()
-        if system == "windows":
-            default_interface = "virtual"  
-        else:
-            default_interface = "socketcan"  
         self._can_kwargs: Dict[str, Any] = {
-            "interface": default_interface,
+            "interface": "socketcan",
             "channel": can_port,
             "can_filters": can_filters,
             "fd": can_fd
         }
-        if default_interface == "virtual":
-            self._can_kwargs["bitrate"] = 500000
-
         if dump_file is not None:
             self._can_kwargs["interface"] = "virtual"
             self._can_kwargs["bitrate"] = 500000

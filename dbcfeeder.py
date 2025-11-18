@@ -171,11 +171,25 @@ class Feeder:
             log.debug("self._mapper.has_vss2dbc_mapping(): %s", self._mapper.has_vss2dbc_mapping())
             log.debug("self._kuksa_client.supports_subscription(): %s", self._kuksa_client.supports_subscription())
             # self._canclient = CANClient(interface="kuksa", channel="PCAN_USBBUS1",bitrate=500000, fd=can_fd)
-            self._canclient = create_kuksa_client(
-                channel="PCAN_USBBUS1", 
-                bitrate=500000, 
-                can_fd=can_fd  
+            try:
+                self._canclient = create_kuksa_client(
+                    channel=canport,  # DÙNG canport THAY VÌ hardcode "PCAN_USBBUS1"
+                    bitrate=500000, 
+                    can_fd=can_fd  
                 )
+                log.info("✓ KUKSA CAN client created successfully")
+            except Exception as e:
+                log.error(f"✗ Failed to create KUKSA CAN client: {e}")
+                log.info("Falling back to virtual CAN interface")
+                try:
+                    from dbcfeederlib.canclient import create_default_client
+                    self._canclient = create_default_client(channel="virtual", bitrate=500000, can_fd=can_fd)
+                    log.info("✓ Virtual CAN client created as fallback")
+                except Exception as fallback_error:
+                    log.error(f"✗ Virtual CAN fallback also failed: {fallback_error}")
+                    log.info("Disabling VAL2DBC functionality")
+                    self._vss2dbc_enabled = False
+                    return
             '''
             Set CAN0 abit:500000 failed! --> check
 
